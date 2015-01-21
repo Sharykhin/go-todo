@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"html/template"
 	"net/http"
 	"log"
@@ -13,6 +13,9 @@ type Todo struct {
 
 var todos []Todo
 
+var data map[string]Todo
+
+
 func defaultHandler(res http.ResponseWriter, req *http.Request) {
 	
 	t, err := template.ParseFiles("public/index.html")
@@ -23,14 +26,16 @@ func defaultHandler(res http.ResponseWriter, req *http.Request) {
 }
 
 func editHandler(res http.ResponseWriter, req *http.Request) {
-	todoTitle := req.URL.Path[len("/edit"):]
-	fmt.Println(todoTitle)
+
+	todoTitle := req.URL.Path[len("/edit/"):]	
 	t, err := template.ParseFiles("public/index.html")
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
-	todo := Todo{Title:todoTitle}
-	t.Execute(res, todo)
+	//todo := Todo{Title:todoTitle}
+
+	//data["todo"]=todo	
+	t.Execute(res, todoTitle)
 }
 
 func saveHandler(res http.ResponseWriter, req *http.Request) {
