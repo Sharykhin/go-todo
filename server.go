@@ -11,9 +11,13 @@ type Todo struct {
 	Title string
 }
 
+type Data struct {
+	Todos []Todo
+	Title string
+}
+
 var todos []Todo
 
-var data map[string]Todo
 
 
 func defaultHandler(res http.ResponseWriter, req *http.Request) {
@@ -22,7 +26,10 @@ func defaultHandler(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	t.Execute(res, todos)
+	
+	data := Data{Todos:todos}
+
+	t.Execute(res, data)
 }
 
 func editHandler(res http.ResponseWriter, req *http.Request) {
@@ -32,10 +39,8 @@ func editHandler(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//todo := Todo{Title:todoTitle}
-
-	//data["todo"]=todo	
-	t.Execute(res, todoTitle)
+	data := Data{Title: todoTitle}
+	t.Execute(res, data)
 }
 
 func saveHandler(res http.ResponseWriter, req *http.Request) {
@@ -49,12 +54,10 @@ func saveHandler(res http.ResponseWriter, req *http.Request) {
 func main() {
 
 	http.Handle("/vendor/", http.StripPrefix("/vendor/",http.FileServer(http.Dir("public/vendor"))))
-	http.HandleFunc("/", defaultHandler)
-	//http.HandleFunc("/public/vendor/", func(res http.ResponseWriter, req *http.Request) {
-	//	http.ServeFile(res, req, req.URL.Path[1:])
-	//})
-	
+
+	http.HandleFunc("/", defaultHandler)	
 	http.HandleFunc("/save", saveHandler)
 	http.HandleFunc("/edit/", editHandler)
+
 	http.ListenAndServe(":8080", nil)
 }

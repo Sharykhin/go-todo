@@ -13,10 +13,14 @@
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <h1>TODO LIST</h1>
+            <div class="btn-group" role="group" aria-label="...">
+             <a href="/" class="btn btn-default">Home</a>           
+            </div>  
             <form method="post" action="/save">
                 <div class="form-group">
                     <label for="toDo">Task title</label>
-                    <input type="text" value="{{if not .}}{{.}}{{end}}" name="todo" class="form-control" id="toDo" placeholder="What am I going to do"/>
+                    {{$title := .Title}}
+                    <input type="text" value="{{$title}}" name="todo" class="form-control" id="toDo" placeholder="What am I going to do"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>
@@ -33,9 +37,10 @@
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <ul class="list-group">
-                {{range .}}
+                {{ $todos := .Todos}}
+                {{range $todo := $todos}}
                     <li class="list-group-item">
-                        <a href="/edit/{{.Title}}">{{.Title}}</a>
+                        <a href="/edit/{{.Title}}">{{$todo.Title}}</a>
                     </li>
                 {{end}}
             </ul>
