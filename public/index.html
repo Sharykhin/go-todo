@@ -21,6 +21,7 @@
                     <label for="toDo">Task title</label>
                     {{$title := .Title}}
                     <input type="text" value="{{$title}}" name="todo" class="form-control" id="toDo" placeholder="What am I going to do"/>
+                    <input type="hidden" name="prev_todo" value="{{$title}}" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>

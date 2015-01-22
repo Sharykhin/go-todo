@@ -27,9 +27,10 @@ func defaultHandler(res http.ResponseWriter, req *http.Request) {
 		log.Fatal(err)
 	}
 	
-	data := Data{Todos:todos}
-
-	t.Execute(res, data)
+	t.Execute(res, struct {
+		Todos []Todo
+		Title string
+		}{Todos:todos})
 }
 
 func editHandler(res http.ResponseWriter, req *http.Request) {
@@ -45,14 +46,37 @@ func editHandler(res http.ResponseWriter, req *http.Request) {
 
 func saveHandler(res http.ResponseWriter, req *http.Request) {
 
+	//Get todo
 	todoTitle := req.FormValue("todo")
-	todos = append(todos, Todo{Title: todoTitle})
+	prevTodo := req.FormValue("prev_todo")
+	
+	if len(prevTodo) > 0 {
+		var tmpTodos []Todo
+		var toAppend bool = true
+		for _, value := range todos {
+			
+			if string(value.Title) == string(prevTodo) {
+					tmpTodos = append(tmpTodos,Todo{Title:todoTitle})	
+					toAppend = false	
+				} else {
+					tmpTodos = append(tmpTodos,Todo{Title:string(value.Title)})		
+				}
+		}
+		todos = tmpTodos
+		if toAppend == true {
+
+			todos = append(todos, Todo{Title: todoTitle})
+		}
+	} else {
+		todos = append(todos, Todo{Title: todoTitle})
+	}	
+	
 	http.Redirect(res, req, "/", http.StatusFound)
 
 }
 
 func main() {
-
+	
 	http.Handle("/vendor/", http.StripPrefix("/vendor/",http.FileServer(http.Dir("public/vendor"))))
 
 	http.HandleFunc("/", defaultHandler)	
