@@ -11,10 +11,12 @@ type Todo struct {
 	Title string
 }
 
+
 type Data struct {
 	Todos []Todo
 	Title string
 }
+
 
 var todos []Todo
 
@@ -24,6 +26,7 @@ func defaultHandler(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 
 	t.Execute(res, struct {
 		Todos []Todo
@@ -41,10 +44,12 @@ func defaultHandler(res http.ResponseWriter, req *http.Request) {
 func editHandler(res http.ResponseWriter, req *http.Request) {
 
 	todoTitle := req.URL.Path[len("/edit/"):]
+
 	t, err := template.ParseFiles("public/index.html")
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	data := Data{Title: todoTitle}
 	t.Execute(res, data)
 }
@@ -62,6 +67,7 @@ func deletHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	todos = tmpTodos
 	http.Redirect(res, req, "/", http.StatusFound)
+
 }
 
 func saveHandler(res http.ResponseWriter, req *http.Request) {
@@ -97,12 +103,16 @@ func saveHandler(res http.ResponseWriter, req *http.Request) {
 
 func main() {
 
+
 	http.Handle("/vendor/", http.StripPrefix("/vendor/", http.FileServer(http.Dir("public/vendor"))))
+
 
 	http.HandleFunc("/", defaultHandler)
 	http.HandleFunc("/save", saveHandler)
 	http.HandleFunc("/edit/", editHandler)
+
 	http.HandleFunc("/delete/", deletHandler)
+
 
 	http.ListenAndServe(":8080", nil)
 
