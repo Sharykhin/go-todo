@@ -62,7 +62,10 @@ func DefaultHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 
-	t.Execute(res,todos)
+	t.Execute(res,struct {
+		TodoItem Todo
+		Todos []Todo
+		}{Todos:todos} )
 }
 
 func EditHandler(res http.ResponseWriter, req *http.Request) {
@@ -79,12 +82,19 @@ func EditHandler(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(title)
+	
 	t.Execute(res,struct{
 		TodoItem Todo 
+		Todos []Todo
 		}{TodoItem: Todo{Id:2, Title:title}})
 	
+}
+
+func SaveHandler(res http.ResponseWriter, req *http.Request) {
+	todoTitle := req.FormValue("todo")
+	todoId := req.FormValue("todoid")
+	fmt.Println(todoId,todoTitle)
+
 }
 
 func main() {
@@ -93,7 +103,9 @@ func main() {
 	http.Handle("/vendor/",http.StripPrefix("/vendor/",http.FileServer(http.Dir("public/vendor"))))
 
 	http.HandleFunc("/",DefaultHandler)
+	http.HandleFunc("/save/",SaveHandler)
 	http.HandleFunc("/edit/",EditHandler)
+	
 	http.ListenAndServe(":8080",nil)
 
 }
