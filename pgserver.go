@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"log"
 	_ "github.com/lib/pq"
-	"database/sql"
+	"database/sql"	
 	"fmt"
+	"strings"
 )
 
 type Todo struct {
@@ -25,10 +26,6 @@ func init() {
 
 func DefaultHandler(res http.ResponseWriter, req *http.Request) {
 
-	db, err := sql.Open("postgres", "user=test dbname=testdb password=test host=localhost port=5432")
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	t, err := template.ParseFiles("public/pg.html")
 	if err != nil {
@@ -69,15 +66,14 @@ func DefaultHandler(res http.ResponseWriter, req *http.Request) {
 }
 
 func EditHandler(res http.ResponseWriter, req *http.Request) {
-	db, err := sql.Open("postgres", "user=test dbname=testdb password=test host=localhost port=5432")
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	
 	var id string
 	var title string
 	id = req.URL.Path[len("/edit/"):]
-	err = db.QueryRow(`SELECT title FROM homedevice WHERE id=` + id).Scan(&title)
+	err := db.QueryRow(`SELECT title FROM homedevice WHERE id=` + id).Scan(&title)
+	if err != nil {
+		log.Fatal(err)
+	}
 	t, err := template.ParseFiles("public/pg.html")
 	if err != nil {
 		log.Fatal(err)
@@ -91,10 +87,34 @@ func EditHandler(res http.ResponseWriter, req *http.Request) {
 }
 
 func SaveHandler(res http.ResponseWriter, req *http.Request) {
+
+	
 	todoTitle := req.FormValue("todo")
 	todoId := req.FormValue("todoid")
-	fmt.Println(todoId,todoTitle)
+	
+	
+	if string(todoId) == "0" {
+		
+		if _,err := db.Exec(`INSERT INTO homedevice(title) VALUES('` + strings.TrimSpace(todoTitle) + `')`); err != nil {
+			log.Fatal(err)
+		} else {
+			http.Redirect(res, req, "/",http.StatusFound)
+		}		
+		
+	}
+	
+	
+	fmt.Fprint(res, "Todo title: " + todoTitle + ". and todoId: " + todoId)
 
+}
+
+
+func init() {
+	var err error
+	db,err = sql.Open("postgres", "user=test dbname=testdb password=test host=localhost port=5432")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {

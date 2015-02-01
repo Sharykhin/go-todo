@@ -16,7 +16,7 @@
              <div class="btn-group" role="group" aria-label="...">
              <a href="/" class="btn btn-default">Home</a>           
             </div> 
-            <form method="post" action="/save">
+            <form method="post" action="/save/" enctype="application/x-www-form-urlencoded">
                 <div class="form-group">
                     {{$todoItem := .TodoItem}}
                     <label for="toDo">Task title</label>
