@@ -97,13 +97,15 @@ func SaveHandler(res http.ResponseWriter, req *http.Request) {
 		
 		if _,err := db.Exec(`INSERT INTO homedevice(title) VALUES('` + strings.TrimSpace(todoTitle) + `')`); err != nil {
 			log.Fatal(err)
-		} else {
-			http.Redirect(res, req, "/",http.StatusFound)
-		}		
+		} 				
 		
+	} else {
+		if _,err := db.Exec(`UPDATE homedevice SET title='` + strings.TrimSpace(todoTitle) + `' WHERE id=`+todoId); err != nil {
+			log.Fatal(err)
+		} 
 	}
 	
-	
+	http.Redirect(res, req, "/",http.StatusFound)
 	fmt.Fprint(res, "Todo title: " + todoTitle + ". and todoId: " + todoId)
 
 }
