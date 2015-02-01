@@ -42,6 +42,7 @@
                 {{range $todos}}
                     <li class="list-group-item">
                         <a href="/edit/{{.Id}}">{{.Title}}</a>
+                         <a href="/delete/{{.Id}}" style="float:right;margin-top:-6px;" class="btn btn-danger btn-sm">Delete</a>
                     </li>
                 {{end}}
             </ul>

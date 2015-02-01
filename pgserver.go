@@ -69,8 +69,9 @@ func EditHandler(res http.ResponseWriter, req *http.Request) {
 	
 	var id string
 	var title string
+	var todoId int
 	id = req.URL.Path[len("/edit/"):]
-	err := db.QueryRow(`SELECT title FROM homedevice WHERE id=` + id).Scan(&title)
+	err := db.QueryRow(`SELECT id,title FROM homedevice WHERE id=` + id).Scan(&todoId,&title)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,8 +83,19 @@ func EditHandler(res http.ResponseWriter, req *http.Request) {
 	t.Execute(res,struct{
 		TodoItem Todo 
 		Todos []Todo
-		}{TodoItem: Todo{Id:2, Title:title}})
+		}{TodoItem: Todo{Id:todoId, Title:title}})
 	
+}
+
+func DeleteHandler(res http.ResponseWriter, req *http.Request) {
+	var id string
+	id = req.URL.Path[len("/delete/"):]
+
+	if _,err := db.Exec(`DELETE FROM homedevice WHERE id=` + id); err != nil {
+		log.Fatal(err)
+	}
+
+	http.Redirect(res,req,"/",http.StatusFound)
 }
 
 func SaveHandler(res http.ResponseWriter, req *http.Request) {
@@ -127,6 +139,7 @@ func main() {
 	http.HandleFunc("/",DefaultHandler)
 	http.HandleFunc("/save/",SaveHandler)
 	http.HandleFunc("/edit/",EditHandler)
+	http.HandleFunc("/delete/",DeleteHandler)
 	
 	http.ListenAndServe(":8080",nil)
 
