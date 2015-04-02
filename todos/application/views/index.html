@@ -1,0 +1,15 @@
+{{define "head"}}{{end}}
+{{define "body"}}
+	<h1>Todos</h1>
+		<div class="row">
+			<form class="form" action="/todo" method="post">
+			  <div class="form-group">
+			    <label for="todo">TODO:</label>
+			    <input type="text" class="form-control" name="todo" id="todo" placeholder="Type todo">
+			  </div>				
+			 	<button type="submit" class="btn btn-primary">Add</button>			 	
+			 </form>
+		</div>
+	
+
+{{end}}
