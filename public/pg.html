@@ -13,17 +13,15 @@
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <h1>TODO LIST</h1>
-            <div class="btn-group" role="group" aria-label="...">
+             <div class="btn-group" role="group" aria-label="...">
              <a href="/" class="btn btn-default">Home</a>           
-            </div>  
-            <form method="post" action="/save">
+            </div> 
+            <form method="post" action="/save/" enctype="application/x-www-form-urlencoded">
                 <div class="form-group">
+                    {{$todoItem := .TodoItem}}
                     <label for="toDo">Task title</label>
-
-                    {{$title := .Title}}
-                    <input type="text" value="{{$title}}" name="todo" class="form-control" id="toDo" placeholder="What am I going to do"/>
-                    <input type="hidden" name="prev_todo" value="{{$title}}" />
-
+                    <input type="text" value="{{if $todoItem.Id}}{{$todoItem.Title}}{{end}}" name="todo" class="form-control" id="toDo" placeholder="What am I going to do"/>
+                    <input type="hidden" name="todoid" value="{{$todoItem.Id}}" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>
@@ -40,11 +38,11 @@
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <ul class="list-group">
-                {{ $todos := .Todos}}
-                {{range $todo := $todos}}
+                {{$todos := .Todos}}
+                {{range $todos}}
                     <li class="list-group-item">
-                        <a href="/edit/{{.Title}}">{{$todo.Title}}</a>
-                        <a href="/delete/{{.Title}}" style="float:right;margin-top:-6px;" class="btn btn-danger btn-sm">Delete</a>
+                        <a href="/edit/{{.Id}}">{{.Title}}</a>
+                         <a href="/delete/{{.Id}}" style="float:right;margin-top:-6px;" class="btn btn-danger btn-sm">Delete</a>
                     </li>
                 {{end}}
             </ul>
