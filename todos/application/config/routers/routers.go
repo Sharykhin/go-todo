@@ -30,6 +30,7 @@ func Listen() {
 
 	var indexController controller.IndexController
 	
-	http.Handle("/", appHandler(indexController.IndexAction))	
+	http.Handle("/", appHandler(indexController.IndexAction))
+	http.Handle("/create",appHandler(indexController.CreateTodoAction))	
 
 }
