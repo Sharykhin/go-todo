@@ -2,8 +2,10 @@ package controller
 
 import (
 	"net/http"
-	auth "github.com/abbot/go-http-auth"
-	"fmt"
+	Todo "project/todos/application/model/todo"
+	sessionComponent "project/todos/core/components/session"
+	"strconv"
+
 ) 
 
 
@@ -11,9 +13,48 @@ type AdminController struct {
 	BaseController
 }
 
-func (ctrl *AdminController) IndexAction(w http.ResponseWriter, r *auth.AuthenticatedRequest)  {
+func (ctrl *AdminController) IndexAction(res http.ResponseWriter, req *http.Request) {
 
- 	fmt.Fprintf(w, "<html><body><h1>Hello, %s!</h1></body></html>", r.Username)
+ 	
+ 	todoModel := Todo.New()
+	
+	flashMessage := ctrl.GetFlashMessages(res,req,"success")
+
+	todos,_ := todoModel.FindAll();
+	
+	
+	
+	ctrl.Render(res,req, "admin", nil, struct {	
+		Todos []map[string]interface{}	
+		FlashMessage []interface{}
+		AdminName string
+	}{			
+		FlashMessage: flashMessage,
+		Todos: todos,
+		AdminName: "Admin",
+	})
+	
+}
+
+
+func (ctrl *AdminController) DeleteAction(res http.ResponseWriter, req *http.Request) {
+
+ 	var param string
+	param = req.URL.Path[len("/admin/delete/"):]	
+
+    id, _ := strconv.Atoi(param) 
+
+ 	todoModel := Todo.New()
+		
+	todoModel.FindById(id)
+	todoModel.Delete()
+
+	session, _ := sessionComponent.Store.Get(req, "session")
+	session.AddFlash("Todo has been deleted","success")
+	session.Save(req,res)
+
+	http.Redirect(res,req,"/admin/",http.StatusFound)
+	
 	
 }
 

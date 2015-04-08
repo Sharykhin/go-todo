@@ -47,6 +47,8 @@ func Listen() {
 	http.Handle("/done/", appHandler(indexController.DoneAction))
 
     authenticator := auth.NewBasicAuthenticator("localhost", Secret)
-    http.HandleFunc("/admin", authenticator.Wrap(adminController.IndexAction))
+
+    http.HandleFunc("/admin/", auth.JustCheck(authenticator, adminController.IndexAction))
+    http.HandleFunc("/admin/delete/",auth.JustCheck(authenticator, adminController.DeleteAction))
 
 }
