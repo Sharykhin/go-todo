@@ -4,7 +4,7 @@ import (
 	controller "project/todos/application/controller"
 	errorComponent "project/todos/core/components/error"
 	"net/http"
-	"fmt"
+	"fmt"	
 )
 
 type appHandler func(http.ResponseWriter, *http.Request) error
@@ -32,5 +32,8 @@ func Listen() {
 	
 	http.Handle("/", appHandler(indexController.IndexAction))
 	http.Handle("/create",appHandler(indexController.CreateTodoAction))	
+
+	
+	http.Handle("/done/", appHandler(indexController.DoneAction))
 
 }

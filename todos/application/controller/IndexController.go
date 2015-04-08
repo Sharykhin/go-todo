@@ -4,6 +4,9 @@ import "net/http"
 import errorComponent "project/todos/core/components/error"
 import Todo "project/todos/application/model/todo"
 import sessionComponent "project/todos/core/components/session"
+import "strconv"
+
+
 
 
 type IndexController struct {
@@ -65,4 +68,25 @@ func (ctrl *IndexController) CreateTodoAction(res http.ResponseWriter, req *http
 	http.Redirect(res,req, "/" , http.StatusFound)
 	return nil
 
+}
+
+func (ctrl *IndexController) DoneAction(res http.ResponseWriter, req *http.Request) error {
+
+	var param string
+	param = req.URL.Path[len("/done/"):]	
+
+    id, _ := strconv.Atoi(param)     
+	
+	todoModel := Todo.New()
+	if err:= todoModel.FindById(id); err != nil {
+		return err
+	}
+	todoModel.SetIsDone(true)
+	if err:= todoModel.Save(); err != nil {
+		return err
+	}
+
+	http.Redirect(res,req,"/",http.StatusFound)
+
+	return nil
 }
