@@ -1,0 +1,9 @@
+<html>
+	<head>
+		<title>Error</title>
+	</head>
+	<body>
+		<h1>501</h1>
+		{{.content}}
+	</body>
+</html>
