@@ -81,6 +81,15 @@
     </div>
   </header>
   <footer>
+    <div>
+      Counter: {{.num}}
+      <p>
+        ID: {{.id}}
+         <a href={{urlfor "MainController.CreateUser"}}>{{urlfor "MainController.CreateUser"}}</a>
+        }
+        }
+      </p>
+    </div>
     <div class="author">
       Official website:
       <a href="http://{{.Website}}">{{.Website}}</a> /
