@@ -8,7 +8,6 @@ import (
 
 ) 
 
-
 type AdminController struct {
 	BaseController
 }
@@ -21,8 +20,6 @@ func (ctrl *AdminController) IndexAction(res http.ResponseWriter, req *http.Requ
 	flashMessage := ctrl.GetFlashMessages(res,req,"success")
 
 	todos,_ := todoModel.FindAll();
-	
-	
 	
 	ctrl.Render(res,req, "admin", nil, struct {	
 		Todos []map[string]interface{}	
