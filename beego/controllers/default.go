@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"html/template"
-	"github.com/astaxie/beego/orm"
 )
 
 type MainController struct {
@@ -27,14 +25,6 @@ type Todo struct {
 
 
 func (c *MainController) Get() {
-	orm.RegisterModel(new(Todo))
-	o := orm.NewOrm()
-
-	todo := Todo{Title:"make a shower",Isdone:false}
-
-	id, _ := o.Insert(&todo)
-
-	c.Data["id"] = id
 
 	v := c.GetSession("admin")
 	if v == nil {
